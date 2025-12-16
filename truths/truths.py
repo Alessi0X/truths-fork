@@ -52,12 +52,18 @@ class Truths(object):
         eval_phrases = []
         for item in self.phrases:
             # normalize boolean operators to lowercase for case-insensitive support
+            # NAND = NOT(A AND B) must be processed before AND to avoid conflicts
+            item = re.sub(r"\bNAND\b", "nand_op", item, flags=re.IGNORECASE)
             item = re.sub(r"\bAND\b", "and", item, flags=re.IGNORECASE)
             item = re.sub(r"\bOR\b", "or", item, flags=re.IGNORECASE)
             item = re.sub(r"\bNOT\b", "not", item, flags=re.IGNORECASE)
             item = re.sub(r"\bXOR\b", "^", item, flags=re.IGNORECASE)
 
             item = self.p.sub(r"g.\1", item)
+
+            # convert nand_op to not (...and...)
+            item = re.sub(r"(\S+)\s+nand_op\s+(\S+)", r"not (\1 and \2)", item)
+
             eval_phrases.append(eval(item))
 
         # add the bases and evaluated phrases to create a single row
