@@ -18,6 +18,7 @@
 import itertools
 from prettytable import PrettyTable
 import re
+import csv
 
 
 class Gob(object):
@@ -25,12 +26,13 @@ class Gob(object):
 
 
 class Truths(object):
-    def __init__(self, base=None, phrases=None, ints=True):
+    def __init__(self, base=None, phrases=None, ints=True, save=False):
         if not base:
             raise Exception("Base items are required")
         self.base = base
         self.phrases = phrases or []
         self.ints = ints
+        self.save = save
 
         # generate the sets of booleans for the bases
         self.base_conditions = list(itertools.product([False, True], repeat=len(base)))
@@ -63,4 +65,19 @@ class Truths(object):
         t = PrettyTable(self.base + self.phrases)
         for conditions_set in self.base_conditions:
             t.add_row(self.calculate(*conditions_set))
+
+        if self.save:
+            self._save_to_csv()
+
         return str(t)
+
+    def _save_to_csv(self, filename="truth_table.csv"):
+        """Save the truth table to a CSV file."""
+        headers = self.base + self.phrases
+
+        with open(filename, "w", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(headers)
+
+            for conditions_set in self.base_conditions:
+                writer.writerow(self.calculate(*conditions_set))
