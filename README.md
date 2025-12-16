@@ -1,21 +1,31 @@
 # truths - auto generate truth tables
-truths is a simple tool that allows you to quickly generate a truth table from python variable names and phrases
 
+truths is a simple tool that allows you to quickly generate truth tables from Python variable names and logical expressions.
 
-## install
-`pip install truths` or `git clone` and `pip install -e` to play with the code
+## Installation
 
+Clone and install for development:
 
-### use is simple:
-start by creating some base variables
+```bash
+git clone <repository-url>
+cd truths
+pip install -e .
+```
+
+## Basic Usage
+
+### Simple Truth Table
+
+Start by creating a truth table with base variables:
 
 ```python
-import truths
-print truths.Truths(['a', 'b', 'x'])
+from truths import Truths
+print(Truths(['A', 'B', 'C']))
 ```
+
 ```
 +---+---+---+
-| a | b | x |
+| A | B | C |
 +---+---+---+
 | 0 | 0 | 0 |
 | 0 | 0 | 1 |
@@ -28,69 +38,147 @@ print truths.Truths(['a', 'b', 'x'])
 +---+---+---+
 ```
 
+### Truth Table with Logical Expressions
 
-### add some phrases
-now let's use those base variables and pass in some phrases! your base variables can be anything you want but must be valid
-python variable names. the phrases also have to be valid python
-
-```python
-from truths import Truths
-print Truths(['a', 'b', 'cat', 'has_address'], ['(a and b)', 'a and b or cat', 'a and (b or cat) or has_address'])
-```
-```
-+---+---+-----+-------------+-----------+----------------+---------------------------------+
-| a | b | cat | has_address | (a and b) | a and b or cat | a and (b or cat) or has_address |
-+---+---+-----+-------------+-----------+----------------+---------------------------------+
-| 0 | 0 |  0  |      0      |     0     |       0        |                0                |
-| 0 | 0 |  0  |      1      |     0     |       0        |                1                |
-| 0 | 0 |  1  |      0      |     0     |       1        |                0                |
-| 0 | 0 |  1  |      1      |     0     |       1        |                1                |
-| 0 | 1 |  0  |      0      |     0     |       0        |                0                |
-| 0 | 1 |  0  |      1      |     0     |       0        |                1                |
-| 0 | 1 |  1  |      0      |     0     |       1        |                0                |
-| 0 | 1 |  1  |      1      |     0     |       1        |                1                |
-| 1 | 0 |  0  |      0      |     0     |       0        |                0                |
-| 1 | 0 |  0  |      1      |     0     |       0        |                1                |
-| 1 | 0 |  1  |      0      |     0     |       1        |                1                |
-| 1 | 0 |  1  |      1      |     0     |       1        |                1                |
-| 1 | 1 |  0  |      0      |     1     |       1        |                1                |
-| 1 | 1 |  0  |      1      |     1     |       1        |                1                |
-| 1 | 1 |  1  |      0      |     1     |       1        |                1                |
-| 1 | 1 |  1  |      1      |     1     |       1        |                1                |
-+---+---+-----+-------------+-----------+----------------+---------------------------------+
-```
-
-
-### prefer boolean words?
-neat eh? if you prefer True/False over the numbers pass `ints=False`:
+Add logical expressions as phrases:
 
 ```python
 from truths import Truths
-print Truths(['a', 'b', 'x', 'd'], ['(a and b)', 'a and b or x', 'a and (b or x) or d'], ints=False)
-```
-```
-+-------+-------+-------+-------+-----------+--------------+---------------------+
-|   a   |   b   |   x   |   d   | (a and b) | a and b or x | a and (b or x) or d |
-+-------+-------+-------+-------+-----------+--------------+---------------------+
-| False | False | False | False |   False   |    False     |        False        |
-| False | False | False |  True |   False   |    False     |         True        |
-| False | False |  True | False |   False   |     True     |        False        |
-| False | False |  True |  True |   False   |     True     |         True        |
-| False |  True | False | False |   False   |    False     |        False        |
-| False |  True | False |  True |   False   |    False     |         True        |
-| False |  True |  True | False |   False   |     True     |        False        |
-| False |  True |  True |  True |   False   |     True     |         True        |
-|  True | False | False | False |   False   |    False     |        False        |
-|  True | False | False |  True |   False   |    False     |         True        |
-|  True | False |  True | False |   False   |     True     |         True        |
-|  True | False |  True |  True |   False   |     True     |         True        |
-|  True |  True | False | False |    True   |     True     |         True        |
-|  True |  True | False |  True |    True   |     True     |         True        |
-|  True |  True |  True | False |    True   |     True     |         True        |
-|  True |  True |  True |  True |    True   |     True     |         True        |
-+-------+-------+-------+-------+-----------+--------------+---------------------+
+print(Truths(['A', 'B'], ['A and B', 'A or B', 'not A']))
 ```
 
+```
++---+---+---------+--------+-------+
+| A | B | A and B | A or B | not A |
++---+---+---------+--------+-------+
+| 0 | 0 |    0    |   0    |   1   |
+| 0 | 1 |    0    |   1    |   1   |
+| 1 | 0 |    0    |   1    |   0   |
+| 1 | 1 |    1    |   1    |   0   |
++---+---+---------+--------+-------+
+```
 
-### how it works
-check out the code! behind the scenes it's putting the bases in an object context and generating a grid of values for them. then, the phrases are `eval`uated in the object's context against each row in that grid of values
+## Supported Operators
+
+truths supports all standard logical operators in a **case-insensitive** manner:
+
+- **AND** - Logical conjunction (e.g., `A AND B`, `A and B`)
+- **OR** - Logical disjunction (e.g., `A OR B`, `A or B`)
+- **NOT** - Logical negation (e.g., `NOT A`, `not A`)
+- **XOR** - Exclusive OR (e.g., `A XOR B`, `A xor B`)
+- **NAND** - NOT AND (e.g., `A NAND B`, `A nand B`)
+- **NOR** - NOT OR (e.g., `A NOR B`, `A nor B`)
+
+### Examples with Different Operators
+
+```python
+from truths import Truths
+
+# XOR example
+print(Truths(['A', 'B'], ['A XOR B']))
+
+# NAND example
+print(Truths(['A', 'B'], ['A NAND B']))
+
+# NOR example
+print(Truths(['A', 'B'], ['A NOR B']))
+
+# Mixed case operators
+print(Truths(['A', 'B'], ['A And B', 'a OR b', 'Not A']))
+```
+
+## Configuration Options
+
+### Boolean Display Format
+
+By default, truth values are displayed as integers (0 and 1). Use `ints=False` to display as True/False:
+
+```python
+from truths import Truths
+print(Truths(['A', 'B'], ['A and B'], ints=False))
+```
+
+```
++-------+-------+-----------+
+|   A   |   B   | A and B   |
++-------+-------+-----------+
+| False | False |   False   |
+| False |  True |   False   |
+|  True | False |   False   |
+|  True |  True |   True    |
++-------+-------+-----------+
+```
+
+### CSV Export
+
+Save truth tables to a CSV file by setting `save=True`:
+
+```python
+from truths import Truths
+
+# This will create 'truth_table.csv' when the table is printed
+table = Truths(['A', 'B'], ['A and B', 'A or B'], save=True)
+print(table)
+```
+
+The CSV file will contain the same data as the printed table with proper headers.
+
+## Advanced Examples
+
+### Complex Expressions
+
+```python
+from truths import Truths
+print(Truths(
+    ['p', 'q', 'r'],
+    ['(p and q) or r', 'p and (q or r)', 'not (p and q)']
+))
+```
+
+### Using All Parameters
+
+```python
+from truths import Truths
+
+# Create a truth table with:
+# - Base variables: A, B, C
+# - Logical expressions
+# - Display as True/False
+# - Save to CSV
+table = Truths(
+    base=['A', 'B', 'C'],
+    phrases=['A and B', 'A NAND B', 'A XOR B', '(A or B) and C'],
+    ints=False,
+    save=True
+)
+print(table)
+```
+
+## How It Works
+
+Behind the scenes, truths:
+1. Generates all possible combinations of truth values for base variables
+2. Normalizes logical operators to be case-insensitive
+3. Evaluates each expression in the context of each combination
+4. Formats the results into a readable table using PrettyTable
+5. Optionally exports to CSV format
+
+## Requirements
+
+- Python 3.x
+- prettytable
+
+## License
+
+Apache License 2.0
+
+## Acknowledgments
+
+This is a fork of the original [truths](https://github.com/tr3buchet/truths) library by [Trey Morris](https://github.com/tr3buchet). The original library provided the foundational truth table generation functionality. This fork adds:
+
+- Case-insensitive operator support (AND, OR, NOT, XOR, NAND, NOR)
+- CSV export functionality
+- Additional logical operators (XOR, NAND, NOR)
+- Enhanced documentation and examples
+
+Thank you to Trey Morris for creating the original `truths` library!
