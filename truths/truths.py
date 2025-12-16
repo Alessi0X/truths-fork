@@ -51,6 +51,11 @@ class Truths(object):
         # then evaluate each
         eval_phrases = []
         for item in self.phrases:
+            # normalize boolean operators to lowercase for case-insensitive support
+            item = re.sub(r"\bAND\b", "and", item, flags=re.IGNORECASE)
+            item = re.sub(r"\bOR\b", "or", item, flags=re.IGNORECASE)
+            item = re.sub(r"\bNOT\b", "not", item, flags=re.IGNORECASE)
+
             item = self.p.sub(r"g.\1", item)
             eval_phrases.append(eval(item))
 
