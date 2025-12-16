@@ -52,8 +52,9 @@ class Truths(object):
         eval_phrases = []
         for item in self.phrases:
             # normalize boolean operators to lowercase for case-insensitive support
-            # NAND = NOT(A AND B) must be processed before AND to avoid conflicts
+            # NAND = NOT(A AND B) and NOR = NOT(A OR B) must be processed before AND/OR to avoid conflicts
             item = re.sub(r"\bNAND\b", "nand_op", item, flags=re.IGNORECASE)
+            item = re.sub(r"\bNOR\b", "nor_op", item, flags=re.IGNORECASE)
             item = re.sub(r"\bAND\b", "and", item, flags=re.IGNORECASE)
             item = re.sub(r"\bOR\b", "or", item, flags=re.IGNORECASE)
             item = re.sub(r"\bNOT\b", "not", item, flags=re.IGNORECASE)
@@ -61,8 +62,9 @@ class Truths(object):
 
             item = self.p.sub(r"g.\1", item)
 
-            # convert nand_op to not (...and...)
+            # convert nand_op to not (...and...) and nor_op to not (...or...)
             item = re.sub(r"(\S+)\s+nand_op\s+(\S+)", r"not (\1 and \2)", item)
+            item = re.sub(r"(\S+)\s+nor_op\s+(\S+)", r"not (\1 or \2)", item)
 
             eval_phrases.append(eval(item))
 
