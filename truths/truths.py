@@ -17,9 +17,9 @@
 #
 
 import itertools
-from prettytable import PrettyTable
 import re
 import csv
+from prettytable import PrettyTable
 
 
 class Gob(object):
