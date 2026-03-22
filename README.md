@@ -165,8 +165,9 @@ Behind the scenes, `truths`:
 
 ## Requirements
 
-- Python 3.x
 - `prettytable`
+
+Tested with all currently supported (i.e., non end-of-life) Python 3 versions: 3.10, 3.11, 3.12, 3.13, 3.14.
 
 ## License
 
@@ -181,4 +182,4 @@ This is a fork of the original [truths](https://github.com/tr3buchet/truths) lib
 - Additional logical operators (XOR, NAND, NOR)
 - Enhanced documentation and examples
 
-Thank you to Trey Morris for creating the original `truths` library!
+Shout-out to Trey Morris for creating the original `truths` library!
